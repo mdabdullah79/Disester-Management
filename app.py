@@ -80,7 +80,7 @@ def register():
 
     return render_template('register.html')
 
-# dummy dashboard route (you can customize it)
+# dashboard route
 @app.route('/dashboard')
 def dashboard():
     if 'user_id' not in session:
@@ -90,13 +90,28 @@ def dashboard():
     if role == 'admin':
         return render_template('admin_dashboard.html')
     elif role == 'volunteer':
-        return render_template('volunteer_dashboard.html')
+        return redirect('/volunteer_home')
     elif role == 'citizen':
         return render_template('citizen_dashboard.html')
     else:
         return "Unknown role"
 
-#view_volunteers
+
+#voluteer_home
+@app.route('/volunteer_home')  # or your actual route name
+def volunteer_home():
+    if 'user_id' not in session or session.get('role') != 'volunteer':
+        return redirect('/login')
+
+    user_id = session['user_id']
+    db = get_db()
+    cur = db.cursor()
+    cur.execute("SELECT name FROM users WHERE user_id = ?", (user_id,))
+    user = cur.fetchone()
+
+    return render_template("volunteer_dashboard.html", name=user["name"] if user else "Volunteer")
+
+#admin_view_volunteers
 @app.route('/view_volunteers')
 def view_volunteers():
     if 'user_id' not in session or session.get('role') != 'admin':
@@ -139,7 +154,7 @@ def view_volunteers():
 
 
 
-#deleteVoleenter
+#admin_deleteVoleenter
 @app.route('/delete_volunteer/<int:user_id>', methods=['POST'])
 def delete_volunteer(user_id):
     if 'user_id' not in session or session.get('role') != 'admin':
@@ -156,7 +171,7 @@ def delete_volunteer(user_id):
 
 
 
-#report_disaster
+#citizen_report_disaster
 @app.route('/report_disaster', methods=['GET', 'POST'])
 def report_disaster():
     if 'user_id' not in session:
@@ -202,7 +217,7 @@ def view_disasters():
     return render_template('view_disasters.html', disasters=disasters)
 
 
-#to_assighn
+#admin_to_assighn
 @app.route('/disaster/<int:disaster_id>', methods=['GET', 'POST'])
 def disaster_detail(disaster_id):
     if 'user_id' not in session or session.get('role') != 'admin':
@@ -254,6 +269,27 @@ def disaster_detail(disaster_id):
                            disaster=disaster,
                            volunteers=volunteers,
                            assigned_volunteers=assigned_volunteers)
+
+#volunteer_tasks
+@app.route('/volunteer_dashboard')
+def volunteer_tasks():
+    if 'user_id' not in session or session.get('role') != 'volunteer':
+        return redirect('/login')
+
+    volunteer_id = session['user_id']
+    db = get_db()
+    cur = db.cursor()
+
+    cur.execute("""
+        SELECT d.*
+        FROM disasters d
+        JOIN volunteer_assignments va ON d.disaster_id = va.disaster_id
+        WHERE va.volunteer_id = ?
+        ORDER BY d.date_time DESC
+    """, (volunteer_id,))
+
+    disasters = cur.fetchall()
+    return render_template('volunteer_tasks.html', disasters=disasters)
 
 # run the Flask app
 if __name__ == '__main__':

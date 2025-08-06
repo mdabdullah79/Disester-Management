@@ -18,7 +18,7 @@
 
 <div class="container mt-5">
     <div class="text-center mb-4">
-        <h2>Welcome, Volunteer!</h2>
+        <h2>Welcome, {{ name }}!</h2>
         <p class="text-muted">Help save lives and manage tasks here.</p>
     </div>
 
@@ -28,7 +28,8 @@
                 <div class="card-body text-center">
                     <h5 class="card-title">Assigned Tasks</h5>
                     <p class="card-text">Check your current disaster relief assignments.</p>
-                    <a href="{{ url_for('volunteer_dashboard') }}" class="btn btn-success">View Tasks</a>
+                    <a href="{{ url_for('volunteer_tasks') }}" class="btn btn-success">View Tasks</a>
+
                 </div>
             </div>
         </div>

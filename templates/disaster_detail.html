@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+{% block title %}Disaster Detail{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Disaster Detail</h2>
+    <p><strong>Type:</strong> {{ disaster.type }}</p>
+    <p><strong>Location:</strong> {{ disaster.location }}</p>
+    <p><strong>Date & Time:</strong> {{ disaster.date_time }}</p>
+    <p><strong>Description:</strong> {{ disaster.description or '-' }}</p>
+
+    <hr>
+
+    <h4>Assign Volunteer</h4>
+    <form method="POST">
+        <div class="mb-3">
+            <label for="volunteer_id" class="form-label">Select Volunteer</label>
+            <select id="volunteer_id" name="volunteer_id" class="form-select" required>
+                <option value="" disabled selected>Choose a volunteer</option>
+                {% for v in volunteers %}
+                <option value="{{ v.user_id }}">{{ v.name }} ({{ v.email }})</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-success">Assign</button>
+    </form>
+
+    <hr>
+
+    <h4>Assigned Volunteers</h4>
+    {% if assigned_volunteers %}
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Assigned On</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for av in assigned_volunteers %}
+            <tr>
+                <td>{{ av.name }}</td>
+                <td>{{ av.email }}</td>
+                <td>{{ av.assigned_on }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No volunteers assigned yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+{% block title %}View Disaster Reports{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Disaster Reports</h2>
+
+    {% if disasters %}
+    <table class="table table-bordered table-striped mt-3">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Type</th>
+                <th>Location</th>
+                <th>Date & Time</th>
+                <th>Description</th>
+                <th>Reported By</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for d in disasters %}
+            <tr>
+                <td>{{ d.disaster_id }}</td>
+                <td>{{ d.type }}</td>
+                <td>{{ d.location }}</td>
+                <td>{{ d.date_time }}</td>
+                <td>{{ d.description or '-' }}</td>
+                <td>{{ d.reporter_name }} ({{ d.reporter_email }})</td>
+                <td>
+                <a href="{{ url_for('disaster_detail', disaster_id=d.disaster_id) }}" class="btn btn-primary btn-sm">View / Assign Volunteers</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No disaster reports found.</p>
+    {% endif %}
+</div>
+{% endblock %}

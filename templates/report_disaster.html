@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block title %}Report Disaster{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Report a Disaster</h2>
+    <form method="POST" action="{{ url_for('report_disaster') }}">
+        <div class="mb-3">
+            <label for="type" class="form-label">Disaster Type</label>
+            <input type="text" name="type" id="type" class="form-control" placeholder="e.g., Flood, Earthquake" required>
+        </div>
+        <div class="mb-3">
+            <label for="location" class="form-label">Location</label>
+            <input type="text" name="location" id="location" class="form-control" placeholder="Location of disaster" required>
+        </div>
+        <div class="mb-3">
+            <label for="date_time" class="form-label">Date and Time</label>
+            <input type="datetime-local" name="date_time" id="date_time" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Description (optional)</label>
+            <textarea name="description" id="description" class="form-control" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Report</button>
+    </form>
+</div>
+{% endblock %}

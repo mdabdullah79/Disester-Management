@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block title %}Request Help - Disaster Management{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Request Help</h2>
+
+<form method="POST" action="{{ url_for('request_help') }}">
+  <div class="mb-3">
+    <label for="disaster_id" class="form-label">Select Disaster</label>
+    <select class="form-select" id="disaster_id" name="disaster_id" required>
+      <option value="" selected disabled>Choose a disaster</option>
+      {% for disaster in disasters %}
+      <option value="{{ disaster.disaster_id }}">
+        {{ disaster.type }} at {{ disaster.location }} ({{ disaster.date_time }})
+      </option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label for="help_type" class="form-label">Type of Help</label>
+    <input type="text" class="form-control" id="help_type" name="help_type" placeholder="Describe the type of help needed" required>
+  </div>
+
+  <div class="mb-3">
+    <label for="location" class="form-label">Your Location</label>
+    <input type="text" class="form-control" id="location" name="location" placeholder="Where do you need help?" required>
+  </div>
+
+  <div class="mb-3">
+    <label for="contact_info" class="form-label">Contact Info</label>
+    <input type="text" class="form-control" id="contact_info" name="contact_info" placeholder="Phone, email, or other contact" required>
+  </div>
+
+  <button type="submit" class="btn btn-warning">Submit Help Request</button>
+  <a href="{{ url_for('dashboard') }}" class="btn btn-secondary ms-2">Cancel</a>
+</form>
+{% endblock %}

@@ -133,6 +133,19 @@ input:focus, select:focus, textarea:focus {
   opacity: 0;
 }
 
+
+.footer {
+    text-align: center;
+    color: #777;
+    padding: 15px 0;
+    font-size: 14px;
+    background-color: #f8f9fa;
+    border-top: 1px solid #ddd;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
 @keyframes fadeIn {
   to {
     opacity: 1;

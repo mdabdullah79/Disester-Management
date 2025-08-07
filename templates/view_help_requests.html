@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Help Requests</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Admin Panel</a>
+        <div class="d-flex align-items-center">
+            <a href="/admin_dashboard" class="btn btn-outline-light me-2">Dashboard</a>
+            <a href="/logout" class="btn btn-outline-light">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container my-5">
+    <div class="text-center mb-4">
+        <h2 class="fw-bold">Help Requests</h2>
+        <p class="text-muted">List of all help requests made by citizens</p>
+    </div>
+
+    {% if help_requests %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">Request ID</th>
+                    <th scope="col">Citizen Name</th>
+                    <th scope="col">Disaster Type</th>
+                    <th scope="col">Help Type</th>
+                    <th scope="col">Location</th>
+                    <th scope="col">Contact Info</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for request in help_requests %}
+                <tr>
+                    <td>{{ request.request_id }}</td>
+                    <td>{{ request.user_name }}</td>
+                    <td>{{ request.disaster_type }}</td>
+                    <td>{{ request.help_type }}</td>
+                    <td>{{ request.location }}</td>
+                    <td>{{ request.contact_info }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <div class="alert alert-info text-center" role="alert">
+            No help requests found.
+        </div>
+    {% endif %}
+</div>
+
+</body>
+</html>

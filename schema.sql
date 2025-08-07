@@ -16,8 +16,6 @@ CREATE TABLE IF NOT EXISTS disasters (
     FOREIGN KEY(reported_by) REFERENCES users(user_id)
 );
 
-
-
 CREATE TABLE IF NOT EXISTS help_requests (
     request_id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
@@ -53,3 +51,12 @@ CREATE TABLE IF NOT EXISTS resources (
     quantity INTEGER NOT NULL,
     location TEXT NOT NULL
 );
+
+CREATE VIEW IF NOT EXISTS available_volunteers AS
+SELECT user_id, name, email
+FROM users
+WHERE role = 'volunteer'
+  AND user_id NOT IN (
+      SELECT volunteer_id FROM volunteer_assignments
+  );
+

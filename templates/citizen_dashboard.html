@@ -11,6 +11,7 @@
     <div class="container-fluid">
         <a class="navbar-brand" href="#">Citizen Dashboard</a>
         <div class="d-flex">
+            <a href="/citizen_profile" class="btn btn-outline-light me-2">Profile</a>
             <a href="/logout" class="btn btn-outline-light">Logout</a>
         </div>
     </div>
@@ -36,7 +37,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Request Help</h5>
                     <p class="card-text">Request emergency assistance or resources.</p>
-                    <a href="#" class="btn btn-warning">Request Help</a>
+                    <a href="{{ url_for('request_help') }}" class="btn btn-warning">Request Help</a>
                 </div>
             </div>
         </div>

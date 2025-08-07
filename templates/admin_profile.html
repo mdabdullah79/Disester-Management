@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+{% block title %}Admin Profile{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow p-4">
+        <h3 class="mb-4 text-center">Admin Profile</h3>
+
+        <div class="row mb-4 justify-content-center">
+            <div class="col-md-4 text-center">
+                {% if profile_pic %}
+                    <img src="{{ url_for('static', filename='uploads/' ~ profile_pic) }}"
+                         alt="Profile Picture"
+                         class="img-fluid rounded-circle border border-3 shadow"
+                         style="width: 150px; height: 150px; object-fit: cover;">
+                {% else %}
+                    <div class="text-muted">No profile picture uploaded.</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-4 text-end fw-bold">Name:</div>
+            <div class="col-md-6">{{ admin_name }}</div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-4 text-end fw-bold">Email:</div>
+            <div class="col-md-6">{{ email }}</div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-4 text-end fw-bold">Role:</div>
+            <div class="col-md-6">Admin</div>
+        </div>
+
+        <!-- Profile Picture Upload -->
+        <form method="POST" enctype="multipart/form-data" class="mt-4 text-center">
+            <label for="profile_pic" class="form-label">Upload New Profile Picture (optional)</label>
+            <input type="file" name="profile_pic" class="form-control mb-3" style="max-width: 300px; margin: 0 auto;" accept="image/*">
+            <button type="submit" class="btn btn-primary">Update Picture</button>
+        </form>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert alert-info mt-3">
+                    {{ messages[0] }}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <div class="text-center mt-4">
+            <a href="/dashboard" class="btn btn-secondary">Back to Dashboard</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

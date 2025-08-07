@@ -88,13 +88,22 @@ def dashboard():
 
     role = session.get('role')
     if role == 'admin':
-        return render_template('admin_dashboard.html')
+        return redirect('/admin_home')  # Redirect admins to their separate function
     elif role == 'volunteer':
         return redirect('/volunteer_home')
     elif role == 'citizen':
         return render_template('citizen_dashboard.html')
     else:
         return "Unknown role"
+
+#admin_home
+@app.route('/admin_home')
+def admin_home():
+    if 'user_id' not in session or session.get('role') != 'admin':
+        return redirect('/login')
+
+    return render_template('admin_dashboard.html')
+
 
 
 #voluteer_home

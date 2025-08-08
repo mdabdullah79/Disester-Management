@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+
+{% block title %}Credits - Disaster Management{% endblock %}
+
+{% block content %}
+<div class="container mt-5 text-center">
+    <h2 class="mb-4">Project Contributors</h2>
+<div class="d-flex justify-content-center">
+    <div class="text-start fs-4">
+        <p>
+            <strong>Mohammad Abdullah</strong> – Admin & Other Core Features<br>
+            <strong>Mohammad Borhan Uddin</strong> – Citizen Features<br>
+            <strong>Montashirul Islam</strong> – Volunteer Features
+        </p>
+    </div>
+</div>
+
+    <a href="{{ url_for('welcome') }}" class="btn btn-secondary mt-3">Back to Home</a>
+</div>
+{% endblock %}

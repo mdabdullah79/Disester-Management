@@ -354,27 +354,30 @@ def request_help():
 
     if request.method == 'POST':
         user_id = session['user_id']
-        disaster_id = request.form.get('disaster_id')
-        help_type = request.form.get('help_type')
-        location = request.form.get('location')
-        contact_info = request.form.get('contact_info')
+        disaster_type = request.form.get('disaster_type', '').strip()
+        help_type = request.form.get('help_type', '').strip()
+        location = request.form.get('location', '').strip()
+        contact_info = request.form.get('contact_info', '').strip()
 
-        if not (disaster_id and help_type and location and contact_info):
+      
+        if not (disaster_type and help_type and location and contact_info):
             return "All fields are required.", 400
 
-        try:
-            cur.execute("""
-                INSERT INTO help_requests (user_id, disaster_id, help_type, location, contact_info)
-                VALUES (?, ?, ?, ?, ?)
-            """, (user_id, disaster_id, help_type, location, contact_info))
-            db.commit()
-            return redirect('/dashboard')
-        except Exception as e:
-            return f"Database error: {e}", 500
+        date_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        cur.execute("""
+            INSERT INTO disasters (type, location, date_time, description, reported_by)
+            VALUES (?, ?, ?, ?, ?)
+        """, (disaster_type, location, date_time, None, user_id))
+        disaster_id = cur.lastrowid  
 
-    cur.execute("SELECT disaster_id, type, location, date_time FROM disasters ORDER BY date_time DESC")
-    disasters = cur.fetchall()
-    return render_template('request_help.html', disasters=disasters)
+        cur.execute("""
+            INSERT INTO help_requests (user_id, disaster_id, help_type, location, contact_info)
+            VALUES (?, ?, ?, ?, ?)
+        """, (user_id, disaster_id, help_type, location, contact_info))
+
+        db.commit()
+        return redirect('/dashboard')
+    return render_template('request_help.html')
 
 # View Help Requests (Admin)
 @app.route('/view_help_requests')
@@ -410,6 +413,64 @@ def citizen_profile():
     if not user:
         return "User not found", 404
     return render_template('citizen_profile.html', user=user)
+
+
+#my_requests
+@app.route('/my_requests')
+def my_requests():
+    if 'user_id' not in session:
+        return redirect('/login')
+    if session.get('role') != 'citizen':
+        return "Access denied", 403
+
+    user_id = session['user_id']
+    db = get_db()
+    cur = db.cursor()
+
+    # Fetch help requests for this user along with disaster info
+    cur.execute("""
+        SELECT hr.request_id, hr.help_type, hr.location as request_location, hr.contact_info,
+               d.disaster_id, d.type AS disaster_type, d.location AS disaster_location, d.date_time,
+               group_concat(u.name) AS volunteer_names
+        FROM help_requests hr
+        JOIN disasters d ON hr.disaster_id = d.disaster_id
+        LEFT JOIN volunteer_assignments va ON d.disaster_id = va.disaster_id
+        LEFT JOIN users u ON va.volunteer_id = u.user_id
+        WHERE hr.user_id = ?
+        GROUP BY hr.request_id
+        ORDER BY d.date_time DESC
+    """, (user_id,))
+
+    requests = cur.fetchall()
+
+    return render_template('my_requests.html', requests=requests)
+
+#delete_request
+@app.route('/delete_request/<int:request_id>', methods=['POST'])
+def delete_request(request_id):
+    if 'user_id' not in session:
+        return redirect('/login')
+    if session.get('role') != 'citizen':
+        return "Access denied", 403
+
+    user_id = session['user_id']
+    db = get_db()
+    cur = db.cursor()
+
+    # Verify the request belongs to the logged-in user
+    cur.execute("SELECT * FROM help_requests WHERE request_id = ? AND user_id = ?", (request_id, user_id))
+    req = cur.fetchone()
+    if not req:
+        return "Help request not found or unauthorized.", 404
+
+    cur.execute("DELETE FROM help_requests WHERE request_id = ?", (request_id,))
+    db.commit()
+
+    return redirect(url_for('my_requests'))
+
+@app.route('/credits')
+def credits():
+    return render_template('credits.html')
 
 # Run app
 if __name__ == '__main__':

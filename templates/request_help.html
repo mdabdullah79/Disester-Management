@@ -6,16 +6,10 @@
 <h2 class="mb-4">Request Help</h2>
 
 <form method="POST" action="{{ url_for('request_help') }}">
+
   <div class="mb-3">
-    <label for="disaster_id" class="form-label">Select Disaster</label>
-    <select class="form-select" id="disaster_id" name="disaster_id" required>
-      <option value="" selected disabled>Choose a disaster</option>
-      {% for disaster in disasters %}
-      <option value="{{ disaster.disaster_id }}">
-        {{ disaster.type }} at {{ disaster.location }} ({{ disaster.date_time }})
-      </option>
-      {% endfor %}
-    </select>
+    <label for="disaster_type" class="form-label">Disaster Type or Description</label>
+    <input type="text" class="form-control" id="disaster_type" name="disaster_type" placeholder="Describe the disaster or emergency" required>
   </div>
 
   <div class="mb-3">

@@ -1,0 +1,58 @@
+
+C233082
+{% extends "layout.html" %}
+
+{% block title %}My Help Requests{% endblock %}
+
+{% block content %}
+<h2>My Help Requests</h2>
+
+{% if requests %}
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Request ID</th>
+        <th>Help Type</th>
+        <th>Request Location</th>
+        <th>Disaster</th>
+        <th>Disaster Location</th>
+        <th>Disaster Date</th>
+        <th>Contact Info</th>
+        <th>Assigned Volunteers</th>
+        <th>Action</th>  <!-- New header for Delete -->
+      </tr>
+    </thead>
+    <tbody>
+      {% for req in requests %}
+        <tr>
+          <td>{{ req.request_id }}</td>
+          <td>{{ req.help_type }}</td>
+          <td>{{ req.request_location }}</td>
+          <td>{{ req.disaster_type }}</td>
+          <td>{{ req.disaster_location }}</td>
+          <td>{{ req.date_time }}</td>
+          <td>{{ req.contact_info }}</td>
+          <td>
+            {% if req.volunteer_names %}
+              {{ req.volunteer_names }}
+            {% else %}
+              <em>No volunteers assigned yet</em>
+            {% endif %}
+          </td>
+          <td>
+            <form method="POST" action="{{ url_for('delete_request', request_id=req.request_id) }}" onsubmit="return confirm('Are you sure you want to delete this help request?');">
+              <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p>You have not submitted any help requests yet.</p>
+{% endif %}
+
+
+<a href="{{ url_for('dashboard') }}" class="btn btn-secondary mt-3">Back to Dashboard</a>
+
+{% endblock %}

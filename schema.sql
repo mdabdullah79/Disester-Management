@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS users (
     password TEXT NOT NULL,
     role TEXT CHECK(role IN ('admin', 'citizen','volunteer')) NOT NULL
 );
+
 CREATE TABLE IF NOT EXISTS disasters (
     disaster_id INTEGER PRIMARY KEY AUTOINCREMENT,
     type TEXT NOT NULL,
@@ -15,6 +16,8 @@ CREATE TABLE IF NOT EXISTS disasters (
     reported_by INTEGER,
     FOREIGN KEY(reported_by) REFERENCES users(user_id)
 );
+
+
 
 CREATE TABLE IF NOT EXISTS help_requests (
     request_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -51,12 +54,4 @@ CREATE TABLE IF NOT EXISTS resources (
     quantity INTEGER NOT NULL,
     location TEXT NOT NULL
 );
-
-CREATE VIEW IF NOT EXISTS available_volunteers AS
-SELECT user_id, name, email
-FROM users
-WHERE role = 'volunteer'
-  AND user_id NOT IN (
-      SELECT volunteer_id FROM volunteer_assignments
-  );
 
